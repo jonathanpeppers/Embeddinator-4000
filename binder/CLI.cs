@@ -9,7 +9,7 @@ namespace MonoEmbeddinator4000
 {
     public class CLI
     {
-        static List<string> Generators;
+        static List<GeneratorKind> Generators;
         static string Platform;
         static string OutputDir;
         static string VsVersion;
@@ -28,7 +28,7 @@ namespace MonoEmbeddinator4000
                 .Select(s => s.StartsWith("VS", StringComparison.InvariantCulture) ? s.Substring(2) : s));
 
             var optionSet = new Mono.Options.OptionSet() {
-                { "gen=", "target generator (C, C++, Obj-C, Java)", v => Generators.Add(v) },
+                { "gen=", "target generator (C, C++, Obj-C, Java)", v => Generators.Add(ConvertToGeneratorKind(v)) },
                 { "p|platform=", "target platform (iOS, macOS, Android, Windows)", v => Platform = v },
                 { "o|out|outdir=", "output directory", v => OutputDir = v },
                 { "c|compile", "compiles the generated output", v => CompileCode = true },
@@ -41,7 +41,7 @@ namespace MonoEmbeddinator4000
                 { "h|help",  "show this message and exit",  v => showHelp = v != null },
             };
 
-            Generators = new List<string>();
+            Generators = new List<GeneratorKind>();
             VsVersion = "latest";
 
             try
@@ -167,6 +167,12 @@ namespace MonoEmbeddinator4000
                 return false;
             }
 
+			//NOTE: Choosing Java generator, needs to imply the C generator
+			if (Generators.Contains(GeneratorKind.Java) && !Generators.Contains(GeneratorKind.C))
+			{
+				Generators.Insert(0, GeneratorKind.C);
+			}
+
             var targetPlatform = ConvertToTargetPlatform(Platform);
             options.Compilation.Platform = targetPlatform;
 
@@ -194,7 +200,7 @@ namespace MonoEmbeddinator4000
 
             foreach (var generator in Generators)
             {
-                options.GeneratorKind = ConvertToGeneratorKind(generator);
+                options.GeneratorKind = generator;
 
 				var driver = new Driver(project, options);
 
