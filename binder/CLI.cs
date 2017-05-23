@@ -167,11 +167,11 @@ namespace MonoEmbeddinator4000
                 return false;
             }
 
-			//NOTE: Choosing Java generator, needs to imply the C generator
-			if (Generators.Contains(GeneratorKind.Java) && !Generators.Contains(GeneratorKind.C))
-			{
-				Generators.Insert(0, GeneratorKind.C);
-			}
+            //NOTE: Choosing Java generator, needs to imply the C generator
+            if (Generators.Contains(GeneratorKind.Java) && !Generators.Contains(GeneratorKind.C))
+            {
+                Generators.Insert(0, GeneratorKind.C);
+            }
 
             var targetPlatform = ConvertToTargetPlatform(Platform);
             options.Compilation.Platform = targetPlatform;
@@ -202,9 +202,9 @@ namespace MonoEmbeddinator4000
             {
                 options.GeneratorKind = generator;
 
-				var driver = new Driver(project, options);
+                var driver = new Driver(project, options);
 
-				driver.Run();
+                driver.Run();
             }
         }
     }
