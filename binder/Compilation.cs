@@ -350,11 +350,18 @@ namespace MonoEmbeddinator4000
             var javac = $"{Path.Combine(GetJavaSdkPath(), "bin", "javac" + executableSuffix)}";
 
             var args = new List<string> {
-                string.Join(" ", files.Select(file => Path.GetFullPath(file)))
+                string.Join(" ", files.Select(file => Path.GetFullPath(file))) + " " +
+
+                //HACK: Various Java files under support/java are needed for compilation
+                string.Join(" ", Directory.GetFiles("support", "*.java", SearchOption.AllDirectories).Select(f => Path.GetFullPath(f)))
             };
 
             if (Options.Compilation.DebugMode)
                 args.Add("-g");
+
+            //HACK: What is the best way to add the JNA library?
+            args.Add("-cp");
+            args.Add("jna-4.4.0.jar");
 
             var invocation = string.Join(" ", args);
             Invoke(javac, invocation);
