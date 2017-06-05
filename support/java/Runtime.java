@@ -98,6 +98,30 @@ public final class Runtime {
 
         String tmp = System.getProperty("java.io.tmpdir");
         String assemblyPath = Utilities.combinePath(tmp, library);
+        extractAssembly(assemblyPath, library);
+        if (isRunningOnAndroid() && library != "mscorlib") {
+            String monoPath = Utilities.combinePath(tmp, "mono/4.5/", library);
+            File monoFile = new File(monoPath);
+            monoFile.mkdirs();
+            extractAssembly(monoPath, "mscorlib");
+        }
+
+        runtimeLibrary = Native.loadLibrary(library, RuntimeLibrary.class);
+
+        runtimeLibrary.mono_embeddinator_set_assembly_path(assemblyPath);
+        error = new RuntimeLibrary.ErrorCallback() {
+            public void invoke(RuntimeLibrary.Error.ByValue error) {
+                if (error.type == RuntimeLibrary.ErrorType.MONO_EMBEDDINATOR_OK)
+                    return;
+
+                pendingException.set(new RuntimeException());
+            }
+        };
+
+        runtimeLibrary.mono_embeddinator_install_error_report_hook(error);
+    }
+
+    private static void extractAssembly(String assemblyPath, String library) {
         File assemblyFile = new File(assemblyPath + ".dll");
 
         if (!assemblyFile.exists()) {
@@ -127,20 +151,6 @@ public final class Runtime {
                 throw new RuntimeException(e);
             }
         }
-
-        runtimeLibrary = Native.loadLibrary(library, RuntimeLibrary.class);
-
-        runtimeLibrary.mono_embeddinator_set_assembly_path(assemblyPath);
-        error = new RuntimeLibrary.ErrorCallback() {
-            public void invoke(RuntimeLibrary.Error.ByValue error) {
-                if (error.type == RuntimeLibrary.ErrorType.MONO_EMBEDDINATOR_OK)
-                    return;
-
-                pendingException.set(new RuntimeException());
-            }
-        };
-
-        runtimeLibrary.mono_embeddinator_install_error_report_hook(error);
     }
 
     public static void checkExceptions() throws RuntimeException {
