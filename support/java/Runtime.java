@@ -78,6 +78,7 @@ public final class Runtime {
         }
 
         public void mono_embeddinator_set_assembly_path(String path);
+        public void mono_set_dirs(String assemblyDir, String configDir);
         public Pointer mono_embeddinator_install_error_report_hook(ErrorCallback cb);
     }
 
@@ -99,16 +100,16 @@ public final class Runtime {
         String tmp = System.getProperty("java.io.tmpdir");
         String assemblyPath = Utilities.combinePath(tmp, library);
         extractAssembly(assemblyPath, library);
-        if (isRunningOnAndroid() && library != "mscorlib") {
-            String monoPath = Utilities.combinePath(tmp, "mono/4.5/", library);
-            File monoFile = new File(monoPath);
-            monoFile.mkdirs();
-            extractAssembly(monoPath, "mscorlib");
-        }
 
         runtimeLibrary = Native.loadLibrary(library, RuntimeLibrary.class);
-
         runtimeLibrary.mono_embeddinator_set_assembly_path(assemblyPath);
+
+        //NOTE: need to make sure mscorlib.dll is extracted & directory set
+        if (isRunningOnAndroid()) {
+            extractAssembly(Utilities.combinePath(tmp, "mscorlib"), "mscorlib");
+            runtimeLibrary.mono_set_dirs(tmp, tmp);
+        }
+        
         error = new RuntimeLibrary.ErrorCallback() {
             public void invoke(RuntimeLibrary.Error.ByValue error) {
                 if (error.type == RuntimeLibrary.ErrorType.MONO_EMBEDDINATOR_OK)

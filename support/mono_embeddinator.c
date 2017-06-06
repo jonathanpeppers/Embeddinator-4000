@@ -103,8 +103,6 @@ static GString* path_override = NULL;
 void mono_embeddinator_set_assembly_path (const char *path)
 {
 	path_override = g_string_new (path);
-
-    mono_assembly_setrootdir(path);
 }
 
 static GString* get_current_executable_path()
