@@ -72,7 +72,11 @@ int mono_embeddinator_init(mono_embeddinator_context_t* ctx, const char* domain)
     ctx->domain = mono_domain_get ();
 #else
     mono_config_parse(NULL);
+    #ifdef __ANDROID__
+    ctx->domain = mono_jit_init_version(domain, "mobile");
+    #else
     ctx->domain = mono_jit_init_version(domain, "v4.0.30319");
+    #endif
 #endif
 
     mono_embeddinator_set_context(ctx);
