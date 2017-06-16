@@ -739,6 +739,10 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
 
             var winSdks = new List<ToolchainVersion>();
             MSVCToolchain.GetWindowsKitsSdks(out winSdks);
+            if (winSdks.Count == 0)
+            {
+                throw new Exception("Windows SDK was not found on your system.");
+            }
 
             var libParentPath = Directory.GetParent(Directory.EnumerateDirectories(Path.Combine(winSdks.Last().Directory, "lib"), "um", SearchOption.AllDirectories).First());
             var libPaths = libParentPath.EnumerateDirectories();
