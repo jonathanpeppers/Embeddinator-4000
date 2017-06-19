@@ -710,8 +710,8 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
             var clBin = String.Empty;
             if ((int)vsSdk.Version == (int)VisualStudioVersion.VS2017)
             {
-                var clFiles = System.IO.Directory.EnumerateFiles(Path.Combine(vsSdk.Directory, @"..\..\VC\Tools\MSVC"), "cl.exe", SearchOption.AllDirectories);
-                clBin = clFiles.Where(s => s.Contains(@"x86\cl.exe")).First();
+                var clFiles = Directory.EnumerateFiles(Path.Combine(vsSdk.Directory, @"..\..\VC\Tools\MSVC"), "cl.exe", SearchOption.AllDirectories);
+                clBin = clFiles.Where(s => s.Contains(@"HostX86\x86\cl.exe")).First();
             }
             else
                 clBin = Path.GetFullPath(Path.Combine(vsSdk.Directory, "..", "..", "VC", "bin", "cl.exe"));
