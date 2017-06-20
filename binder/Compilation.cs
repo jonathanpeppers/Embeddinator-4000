@@ -460,7 +460,7 @@ namespace MonoEmbeddinator4000
                 Options.Compilation.Platform == TargetPlatform.Windows)
             {
                 //Copy native libs
-                var platformDir = Path.Combine(classesDir, Options.Compilation.Platform == TargetPlatform.Windows ? "win32-x86-64" : "darwin");
+                var platformDir = Path.Combine(classesDir, Options.Compilation.Platform == TargetPlatform.Windows ? "win32-x86" : "darwin");
                 if (!Directory.Exists(platformDir))
                     Directory.CreateDirectory(platformDir);
 
