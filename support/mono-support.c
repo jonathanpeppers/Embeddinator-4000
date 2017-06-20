@@ -27,12 +27,7 @@
 #include "mono_embeddinator.h"
 
 #include <string.h>
-#if defined(_WIN32)
-#define RTLD_LAZY	0x1
-#define RTLD_NOW	0x2
-#define RTLD_LOCAL	0x4
-#define RTLD_GLOBAL	0x8
-#else
+#if !defined(_WIN32)
 #include <dlfcn.h>
 #endif
 
