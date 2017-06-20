@@ -43,7 +43,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Mono.Posix" />
+    <Reference Include="Mono.Posix">
+      <HintPath Condition=" '$(OS)' == 'Windows_NT' ">$(MSBuildProgramFiles32)\Mono\lib\Mono.Posix\Mono.Posix.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../external/Xamarin.MacDev/Xamarin.MacDev/AnalyticsService.cs">
