@@ -456,16 +456,18 @@ namespace MonoEmbeddinator4000
             };
 
             // On desktop Java, we need a few more files included
-            if (Options.Compilation.Platform == TargetPlatform.MacOS)
+            if (Options.Compilation.Platform == TargetPlatform.MacOS ||
+                Options.Compilation.Platform == TargetPlatform.Windows)
             {
                 //Copy native libs
-                var platformDir = Path.Combine(classesDir, "darwin");
+                var platformDir = Path.Combine(classesDir, Options.Compilation.Platform == TargetPlatform.Windows ? "win32-x86-64" : "darwin");
                 if (!Directory.Exists(platformDir))
                     Directory.CreateDirectory(platformDir);
 
-                var libName = $"lib{name}.dylib";
-                var outputDir = Path.Combine(Options.OutputDir, libName);
-                File.Copy(outputDir, Path.Combine(platformDir, libName), true);
+                var libName = Options.Compilation.Platform == TargetPlatform.Windows ?
+                    name + ".dll" :
+                    $"lib{name}.dylib";
+                File.Copy(Path.Combine(Options.OutputDir, libName), Path.Combine(platformDir, libName), true);
 
                 //Copy .NET assemblies
                 var assembliesDir = Path.Combine(classesDir, "assemblies");
@@ -724,8 +726,7 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
             Diagnostics.Debug($"VS path {vsSdk.Directory}");
 
             var monoPath = ManagedToolchain.FindMonoPath();
-            var outputPath = Path.Combine(Options.OutputDir, Options.LibraryName ??
-                Path.GetFileNameWithoutExtension(Project.Assemblies[0]));
+            var outputPath = Path.Combine(Options.OutputDir, Path.GetFileNameWithoutExtension(Project.Assemblies[0]) + ".dll");
 
             var args = new List<string> {
                 "/nologo",
