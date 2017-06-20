@@ -22,14 +22,12 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+#if !defined(_WIN32)
 #include "mono-support.h"
 #include "mono_embeddinator.h"
 
 #include <string.h>
-#if !defined(_WIN32)
 #include <dlfcn.h>
-#endif
 
 #define log_info(cat, msg, ...)
 #define log_error(cat, msg, ...)
@@ -126,3 +124,4 @@ int mono_embeddinator_dylib_mono_init (struct DylibMono *mono_imports, const cha
 
 	return true;
 }
+#endif
