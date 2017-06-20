@@ -183,6 +183,21 @@ if (!(Test-Path $CAKE_EXE)) {
     Throw "Could not find Cake.exe at $CAKE_EXE"
 }
 
+# VS Command Prompt
+$VS_DIR = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Enterprise\Common7\Tools"
+if (!(Test-Path $VS_DIR)) {
+    Throw "Could not find VS 2017 directory at $VS_DIR"
+}
+pushd $VS_DIR
+cmd /c "VsDevCmd.bat&set" |
+foreach {
+  if ($_ -match "=") {
+    $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
+  }
+}
+popd
+Write-Host "Visual Studio 2017 Command Prompt variables set."
+
 # Start Cake
 Write-Host "Running build script..."
 Invoke-Expression "& `"$CAKE_EXE`" `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental $ScriptArgs"
