@@ -6,14 +6,7 @@ public static class Platform {
 	// static get-only property
 	public static bool IsWindows {
 		get {
-			switch (Environment.OSVersion.Platform) {
-			case PlatformID.Win32NT:
-			case PlatformID.Win32S:
-			case PlatformID.Win32Windows:
-			case PlatformID.WinCE:
-				return true;
-			}
-			return false;
+            return Environment.NewLine == "\r\n";
 		}
 	}
 	

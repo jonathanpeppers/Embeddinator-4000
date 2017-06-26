@@ -7,7 +7,7 @@ namespace Exceptions {
 		// objc: exceptions are, mostly, terminal but it's _ok_ for `init` to return `nil`
 		public Throwers ()
 		{
-			throw new NotFiniteNumberException ();
+			throw new Exception ();
 		}
 	}
 
@@ -22,7 +22,7 @@ namespace Exceptions {
 		{
 			// should not be callable
 			// obj: init will return nil
-			Console.WriteLine ("Should not be printed");
+			System.Diagnostics.Debug.WriteLine ("Should not be printed");
 		}
 	}
 
