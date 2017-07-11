@@ -6,7 +6,7 @@ var configuration = Argument("configuration", "Release");
 var buildDir = Directory("./build/lib") + Directory(configuration);
 var embeddinator = buildDir + File("MonoEmbeddinator4000.exe");
 var managedDll = Directory("./tests/managed/generic/bin") + Directory(configuration) + File("managed.dll");
-var androidDll = Directory("./tests/managed/android/bin") + Directory(configuration) + File("managed.dll");
+var androidDll = Directory("./tests/managed/android/bin") + Directory(configuration) + File("Managed.Android.dll");
 var pclDll = Directory("./tests/managed/pcl/bin") + Directory(configuration) + File("managed.dll");
 
 //Java settings
@@ -95,6 +95,7 @@ Task("Build-Android")
     .Does(() =>
     {
         MSBuild("./tests/managed/android/managed-android.csproj", settings => settings.SetConfiguration(configuration).SetVerbosity(Verbosity.Minimal));
+        MoveFile(Directory("./tests/managed/android/bin") + Directory(configuration) + File("managed.dll"), androidDll);
     });
 
 Task("Build-PCL")
