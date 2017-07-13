@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
+using Microsoft.Build.Execution;
 using Xamarin.Android.Tools;
 
 namespace MonoEmbeddinator4000
@@ -23,6 +24,7 @@ namespace MonoEmbeddinator4000
                 msBuildPath = msBuildPath + Path.DirectorySeparatorChar;
 
             var project = ProjectRootElement.Create();
+            project.AddProperty("DebugSymbols", "False");
             project.AddProperty("Configuration", "Release");
             project.AddProperty("Platform", "AnyCPU");
             project.AddProperty("PlatformTarget", "AnyCPU");
@@ -43,6 +45,16 @@ namespace MonoEmbeddinator4000
             resolveAssemblies.AddOutputItem("ResolvedAssemblies", "ResolvedAssemblies");
             resolveAssemblies.AddOutputItem("ResolvedUserAssemblies", "ResolvedUserAssemblies");
             resolveAssemblies.AddOutputItem("ResolvedFrameworkAssemblies", "ResolvedFrameworkAssemblies");
+        }
+
+        static void Build(ProjectRootElement project)
+        {
+            var instance = new ProjectInstance(project);
+            var request = new BuildRequestData(instance, new[] { "Build" }, new HostServices());
+            var parameters = new BuildParameters();
+            var result = BuildManager.DefaultBuildManager.Build(parameters, request);
+            if (result.OverallResult != BuildResultCode.Success)
+                throw result.Exception;
         }
 
         /// <summary>
@@ -164,7 +176,7 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
         /// - Generates AndroidManifest.xml
         /// - One day I would like to get rid of the temp files, but I could not get the MSBuild APIs to work in-process
         /// </summary>
-        public static string GenerateJavaStubsProject(List<IKVM.Reflection.Assembly> assemblies, string outputDirectory)
+        public static void GenerateJavaStubsProject(List<IKVM.Reflection.Assembly> assemblies, string outputDirectory)
         {
             var mainAssembly = assemblies[0].Location;
             outputDirectory = Path.GetFullPath(outputDirectory);
@@ -248,7 +260,8 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
             //NOTE: might avoid the temp file later
             var projectFile = Path.Combine(outputDirectory, "GenerateJavaStubs.proj");
             project.Save(projectFile);
-            return projectFile;
+
+            Build(project);
         }
     }
 }

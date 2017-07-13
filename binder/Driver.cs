@@ -199,9 +199,7 @@ namespace MonoEmbeddinator4000
             if (Options.GeneratorKind == GeneratorKind.Java && Options.Compilation.Platform == TargetPlatform.Android)
             {
                 Diagnostics.Message("Generating Java stubs...");
-                var project = XamarinAndroidBuild.GenerateJavaStubsProject(Assemblies, Options.OutputDir);
-                if (!MSBuild(project))
-                    return false;
+                XamarinAndroidBuild.GenerateJavaStubsProject(Assemblies, Options.OutputDir);
             }
 
             return true;
