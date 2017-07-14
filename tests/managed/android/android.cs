@@ -15,6 +15,9 @@ using R = managedandroid.Resource;
 
 namespace Android
 {
+    [Register("mono.embeddinator.android.SubclassJava")]
+    public class SubclassJava : Java.Lang.Object { }
+
     [Register("mono.embeddinator.android.ViewSubclass")]
     public class ViewSubclass : TextView
     {

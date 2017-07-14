@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.TextView;
@@ -84,6 +85,37 @@ public class AndroidTests {
         } finally {
             reader.close();
         }
+    }
+
+    @Test
+    public void thread() {
+        new Thread(() -> {
+            try {
+                SubclassJava obj = new SubclassJava();
+                obj.toString();
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    class Task extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                SubclassJava obj = new SubclassJava();
+                obj.toString();
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        }
+    }
+
+    @Test
+    public void asyncTask() {
+        Task task = new Task();
+        task.execute();
     }
 
     @Test
