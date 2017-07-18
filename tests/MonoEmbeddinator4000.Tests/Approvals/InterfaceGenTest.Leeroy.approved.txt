@@ -1,0 +1,83 @@
+	// Metadata.xml XPath interface reference: path="/api/package[@name='mono.embeddinator.android']/interface[@name='IJavaCallback']"
+	[Register ("mono/embeddinator/android/IJavaCallback", "", "MonoEmbeddinator4000.Tests.IJavaCallbackInvoker")]
+	public partial interface IJavaCallback : IJavaObject {
+
+		[Register ("send", "(Ljava/lang/String;)V", "GetSend_Ljava_lang_String_Handler:MonoEmbeddinator4000.Tests.IJavaCallbackInvokertmp3c17ea7, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")]
+		void Send (string text);
+
+	}
+
+	[global::Android.Runtime.Register ("mono/embeddinator/android/IJavaCallback", DoNotGenerateAcw=true)]
+	internal class IJavaCallbackInvoker : global::Java.Lang.Object, IJavaCallback {
+
+		static IntPtr java_class_ref = JNIEnv.FindClass ("mono/embeddinator/android/IJavaCallback");
+
+		protected override IntPtr ThresholdClass {
+			get { return class_ref; }
+		}
+
+		protected override global::System.Type ThresholdType {
+			get { return typeof (IJavaCallbackInvoker); }
+		}
+
+		IntPtr class_ref;
+
+		public static IJavaCallback GetObject (IntPtr handle, JniHandleOwnership transfer)
+		{
+			return global::Java.Lang.Object.GetObject<IJavaCallback> (handle, transfer);
+		}
+
+		static IntPtr Validate (IntPtr handle)
+		{
+			if (!JNIEnv.IsInstanceOf (handle, java_class_ref))
+				throw new InvalidCastException (string.Format ("Unable to convert instance of type '{0}' to type '{1}'.",
+							JNIEnv.GetClassNameFromInstance (handle), "mono.embeddinator.android.IJavaCallback"));
+			return handle;
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (this.class_ref != IntPtr.Zero)
+				JNIEnv.DeleteGlobalRef (this.class_ref);
+			this.class_ref = IntPtr.Zero;
+			base.Dispose (disposing);
+		}
+
+		public IJavaCallbackInvoker (IntPtr handle, JniHandleOwnership transfer) : base (Validate (handle), transfer)
+		{
+			IntPtr local_ref = JNIEnv.GetObjectClass (((global::Java.Lang.Object) this).Handle);
+			this.class_ref = JNIEnv.NewGlobalRef (local_ref);
+			JNIEnv.DeleteLocalRef (local_ref);
+		}
+
+		static Delegate cb_send_Ljava_lang_String_;
+#pragma warning disable 0169
+		static Delegate GetSend_Ljava_lang_String_Handler ()
+		{
+			if (cb_send_Ljava_lang_String_ == null)
+				cb_send_Ljava_lang_String_ = JNINativeWrapper.CreateDelegate ((Action<IntPtr, IntPtr, IntPtr>) n_Send_Ljava_lang_String_);
+			return cb_send_Ljava_lang_String_;
+		}
+
+		static void n_Send_Ljava_lang_String_ (IntPtr jnienv, IntPtr native__this, IntPtr native_text)
+		{
+			MonoEmbeddinator4000.Tests.IJavaCallback __this = global::Java.Lang.Object.GetObject<MonoEmbeddinator4000.Tests.IJavaCallback> (jnienv, native__this, JniHandleOwnership.DoNotTransfer);
+			string text = JNIEnv.GetString (native_text, JniHandleOwnership.DoNotTransfer);
+			__this.Send (text);
+		}
+#pragma warning restore 0169
+
+		IntPtr id_send_Ljava_lang_String_;
+		public unsafe void Send (string text)
+		{
+			if (id_send_Ljava_lang_String_ == IntPtr.Zero)
+				id_send_Ljava_lang_String_ = JNIEnv.GetMethodID (class_ref, "send", "(Ljava/lang/String;)V");
+			IntPtr native_text = JNIEnv.NewString (text);
+			JValue* __args = stackalloc JValue [1];
+			__args [0] = new JValue (native_text);
+			JNIEnv.CallVoidMethod (((global::Java.Lang.Object) this).Handle, id_send_Ljava_lang_String_, __args);
+			JNIEnv.DeleteLocalRef (native_text);
+		}
+
+	}
+

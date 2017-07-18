@@ -199,6 +199,10 @@
       <Project>{F329EB84-DFF7-DE8A-C88B-4FB1B4F8BAEF}</Project>
       <Name>Xamarin.MacDev</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\external\java.interop\tools\generator\generator.csproj">
+      <Project>{D14A1B5C-2060-4930-92BE-F7190256C735}</Project>
+      <Name>generator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
