@@ -19,8 +19,9 @@ Task("Download-Xamarin-Android")
         Console.WriteLine("Downloading Xamarin.Android SDK, this will take a while...");
 
         //We can also update this URL later from here: https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android/lastSuccessfulBuild/Azure/
-        var artifact = "oss-xamarin.android_v7.4.99.16_Darwin-x86_64_master_e83c99c";
-        var url = $"https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android/444/Azure/processDownloadRequest/xamarin-android/{artifact}.zip";
+        var artifact = "oss-xamarin.android_v8.0.99.63_Darwin-x86_64_HEAD_28d78bc";
+        var buildId = 670;
+        var url = $"https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android/{buildId}/Azure/processDownloadRequest/xamarin-android/{artifact}.zip";
         var temp = DownloadFile(url);
         var tempDir = temp.GetDirectory() + "/" + artifact;
         try
@@ -38,7 +39,7 @@ Task("Download-Xamarin-Android")
             //Removing them should make our distribution smaller 875.6MB -> 277.2MB (92.7MB compressed)
             DeleteFiles(GetFiles("./external/Xamarin.Android/*"));
             DeleteDirectory("./external/Xamarin.Android/bin", true);
-            DeleteDirectory("./external/Xamarin.Android/lib/mandroid", true);
+
             foreach (var directory in GetDirectories("./external/Xamarin.Android/lib/xbuild-frameworks/MonoAndroid/*"))
             {
                 var name = directory.GetDirectoryName();
@@ -54,7 +55,6 @@ Task("Download-Xamarin-Android")
     });
 
 Task("Generate-Android")
-    .IsDependentOn("Download-Xamarin-Android")
     .IsDependentOn("Build-Binder")
     .IsDependentOn("Build-Android")
     .Does(() =>
