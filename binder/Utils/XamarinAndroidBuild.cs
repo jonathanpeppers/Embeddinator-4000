@@ -196,6 +196,8 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
             //ResolveLibraryProjectImports Task, extracts Android resources
             var resolveLibraryProject = target.AddTask("ResolveLibraryProjectImports");
             resolveLibraryProject.SetParameter("Assemblies", "@(ResolvedUserAssemblies)");
+			resolveLibraryProject.SetParameter("AssemblyIdentityMapFile", Path.Combine(intermediateDir, "map.cache"));
+            resolveLibraryProject.SetParameter("CacheFile", Path.Combine(intermediateDir, "libraryprojectimports.cache"));
             resolveLibraryProject.SetParameter("UseShortFileNames", "False");
             resolveLibraryProject.SetParameter("ImportsDirectory", intermediateDir);
             resolveLibraryProject.SetParameter("OutputDirectory", intermediateDir);
@@ -209,6 +211,7 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
             getAdditionalResources.SetParameter("AndroidNdkDirectory", XamarinAndroid.AndroidSdk.AndroidNdkPath);
             getAdditionalResources.SetParameter("Assemblies", "@(ResolvedUserAssemblies)");
             getAdditionalResources.SetParameter("CacheFile", Path.Combine(intermediateDir, ResourcePaths));
+			getAdditionalResources.SetParameter("DesignTimeBuild", "False");
 
             //Create ItemGroup of Android files
             var androidResources = target.AddItemGroup();
