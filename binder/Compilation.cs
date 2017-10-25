@@ -406,8 +406,7 @@ namespace Embeddinator
             Diagnostics.Message("Linking assemblies...");
 
             //Performs Xamarin.Android build tasks such as Linking, Resource/Asset extraction, invoking aapt.
-            var project = XamarinAndroidBuild.GeneratePackageProject(Assemblies, Options);
-            if (!MSBuild(project))
+            if (!XamarinAndroidBuild.Package(Assemblies, Options))
                 return false;
 
             //Generate Resource.designer.dll
@@ -433,12 +432,6 @@ namespace Embeddinator
 
             var invocation = string.Join(" ", args);
             var output = Invoke(jar, invocation);
-            return output.ExitCode == 0;
-        }
-
-        bool MSBuild(string project)
-        {
-            var output = Invoke(XamarinAndroid.MSBuildPath, $"/nologo /verbosity:minimal {project}");
             return output.ExitCode == 0;
         }
 

@@ -145,24 +145,5 @@ namespace Embeddinator
         });
 
         public static string JavaSdkPath => javaSdkPath.Value;
-
-        static readonly Lazy<string> msBuildPath = new Lazy<string>(() =>
-        {
-            if (Platform.IsMacOS)
-                return "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
-
-            if (Platform.IsWindows)
-            {
-                List<ToolchainVersion> toolchains = MSVCToolchain.GetMSBuildSdks();
-                if (!toolchains.Any())
-                    return "MSBuild.exe";
-
-                return Combine(toolchains.OrderByDescending(t => t.Version).Select(t => t.Directory).First(), "MSBuild.exe");
-            }
-
-            return "/usr/bin/msbuild";
-        });
-
-        public static string MSBuildPath => msBuildPath.Value;
     }
 }

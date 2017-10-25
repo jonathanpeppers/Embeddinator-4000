@@ -194,8 +194,7 @@ namespace Embeddinator
             if (Options.GeneratorKind == GeneratorKind.Java && Options.Compilation.Platform == TargetPlatform.Android)
             {
                 Diagnostics.Message("Generating Java stubs...");
-                var project = XamarinAndroidBuild.GenerateJavaStubsProject(Assemblies, Options.OutputDir);
-                if (!MSBuild(project))
+                if (!XamarinAndroidBuild.GenerateJavaStubs(Assemblies, Options.OutputDir))
                     return false;
             }
 

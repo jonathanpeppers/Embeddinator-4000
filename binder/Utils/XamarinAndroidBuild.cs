@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using Mono.Cecil;
-using Xamarin.Android.Tools;
+using Microsoft.Build.Execution;
 
 namespace Embeddinator
 {
@@ -30,6 +30,7 @@ namespace Embeddinator
 
             var project = ProjectRootElement.Create();
             project.AddProperty("Configuration", "Release");
+            project.AddProperty("DebugSymbols", "False");
             project.AddProperty("Platform", "AnyCPU");
             project.AddProperty("PlatformTarget", "AnyCPU");
             project.AddProperty("OutputPath", "bin\\Release");
@@ -54,16 +55,32 @@ namespace Embeddinator
             resolveAssemblies.AddOutputItem("ResolvedFrameworkAssemblies", "ResolvedFrameworkAssemblies");
         }
 
+        static bool MSBuild(ProjectRootElement project)
+        {
+            var projectCollection = new ProjectCollection();
+            var parameters = new BuildParameters(projectCollection);
+            var request = new BuildRequestData(new ProjectInstance(project), new[] { "Build" });
+
+            var result = BuildManager.DefaultBuildManager.Build(parameters, request);
+            if (result.OverallResult != BuildResultCode.Success)
+            {
+                Console.WriteLine("MSBuild failure: " + result.Exception);
+
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
-        /// Generates a Package.proj file for MSBuild to invoke
+        /// Generates a Package.proj MSBuild project in memory and invokes it via the MSBuild APIs
         /// - Generates Resource.designer.dll for rewiring resource values from the final Java project
         /// - Links .NET assemblies and places output into /android/assets/assemblies
         /// - Extracts assets and resources from Android library projects into /obj/
         /// - Copies assets and resources into AAR
         /// - Invokes aapt to generate R.txt
-        /// - One day I would like to get rid of the temp files, but I could not get the MSBuild APIs to work in-process
         /// </summary>
-        public static string GeneratePackageProject(List<IKVM.Reflection.Assembly> assemblies, Options options)
+        public static bool Package(List<IKVM.Reflection.Assembly> assemblies, Options options)
         {
             var mainAssembly = assemblies[0].Location;
             var outputDirectory = Path.GetFullPath(options.OutputDir);
@@ -119,10 +136,7 @@ namespace Embeddinator
             var removeDir = target.AddTask("RemoveDir");
             removeDir.SetParameter("Directories", Path.Combine(androidDir, "manifest"));
 
-            //NOTE: might avoid the temp file later
-            var projectFile = Path.Combine(outputDirectory, "Package.proj");
-            project.Save(projectFile);
-            return projectFile;
+            return MSBuild(project);
         }
 
         /// <summary>
@@ -151,12 +165,12 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
         }
 
         /// <summary>
-        /// Generates a GenerateJavaStubs.proj file for MSBuild to invoke
+        /// Generates a GenerateJavaStubs.proj MSBuild project in memory and invokes it via the MSBuild APIs
         /// - Generates Java source code for each C# class that subclasses Java.Lang.Object
         /// - Generates AndroidManifest.xml
         /// - One day I would like to get rid of the temp files, but I could not get the MSBuild APIs to work in-process
         /// </summary>
-        public static string GenerateJavaStubsProject(List<IKVM.Reflection.Assembly> assemblies, string outputDirectory)
+        public static bool GenerateJavaStubs(List<IKVM.Reflection.Assembly> assemblies, string outputDirectory)
         {
             var mainAssembly = assemblies[0].Location;
             outputDirectory = Path.GetFullPath(outputDirectory);
@@ -255,10 +269,7 @@ $@"<?xml version=""1.0"" encoding=""utf-8""?>
             xmlPoke.SetParameter("Query", "/manifest/application/provider/@android:authorities");
             xmlPoke.SetParameter("Value", "${applicationId}.mono.embeddinator.AndroidRuntimeProvider.__mono_init__");
 
-            //NOTE: might avoid the temp file later
-            var projectFile = Path.Combine(outputDirectory, "GenerateJavaStubs.proj");
-            project.Save(projectFile);
-            return projectFile;
+            return MSBuild(project);
         }
 
         /// <summary>

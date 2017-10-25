@@ -83,13 +83,5 @@ namespace Embeddinator.Tests
             string file = Path.Combine(XamarinAndroid.PlatformDirectory, "android.jar");
             FileAssert.Exists(file);
         }
-
-        [Test]
-        public void MSBuild()
-        {
-            string msbuild = XamarinAndroid.MSBuildPath;
-            var output = Helpers.Invoke(msbuild, "/version");
-            Assert.AreEqual(0, output.ExitCode);
-        }
     }
 }
