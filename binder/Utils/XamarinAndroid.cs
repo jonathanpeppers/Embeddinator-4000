@@ -52,7 +52,7 @@ namespace Embeddinator
                 return GetFullPath(MonoDroidSdk.BinPath);
 
             //On Mac, it is up one directory from BinPath
-            return GetFullPath(Combine(MonoDroidSdk.BinPath, ".."));
+            return GetFullPath(Combine(MonoDroidSdk.BinPath, "..", ".."));
         }
 
         static string GetMonoDroidLibPath()

@@ -10,7 +10,7 @@ namespace Xamarin.Android.Tools
 	{
 		protected readonly static string DebugRuntime = "Mono.Android.DebugRuntime-debug.apk";
 		protected readonly static string ClassParseExe = "class-parse.exe";
-		protected readonly static string GeneratorScript = "generator";
+		protected readonly static string GeneratorScript = "generator.exe";
 
 		// I can never remember the difference between SdkPath and anything else...
 		[Obsolete ("Do not use.")]

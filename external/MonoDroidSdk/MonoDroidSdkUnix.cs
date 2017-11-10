@@ -9,7 +9,7 @@ namespace Xamarin.Android.Tools
 	{
 		readonly static string[] RuntimeToFrameworkPaths = new[]{
 			Path.Combine ("..", "..", "..", ".xamarin.android", "lib", "xbuild-frameworks", "MonoAndroid"),
-			Path.Combine ("..", "xbuild-frameworks", "MonoAndroid"),
+			Path.Combine ("..", "..", "..", "xbuild-frameworks", "MonoAndroid"),
 			Path.Combine ("..", "mono", "2.1"),
 		};
 
@@ -37,7 +37,7 @@ namespace Xamarin.Android.Tools
 			var personal = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 			var additionalSearchPaths = new [] {
 				// for Mono.Posix and Mono.Data.Sqlite builds in xamarin-android.
-				monoAndroidPath = Path.GetFullPath (Path.Combine (new Uri (GetType ().Assembly.CodeBase).LocalPath, "..", "..", "..", "..", "..", "lib", "mandroid")),
+				monoAndroidPath = Path.GetFullPath (Path.Combine (new Uri (typeof (string).Assembly.CodeBase).LocalPath, "..", "..", "..", "..", "..", "..", "External", "xbuild", "Xamarin", "Android")),
 				Path.Combine (personal, @".xamarin.android/lib/mandroid")
 			};
 
@@ -72,9 +72,9 @@ namespace Xamarin.Android.Tools
 
 		protected override string FindBin (string runtimePath)
 		{
-			string binPath = Path.GetFullPath (Path.Combine (runtimePath, "..", "..", "bin"));
-			if (File.Exists (Path.Combine (binPath, GeneratorScript)))
-				return binPath;
+			var binPath = Path.Combine(runtimePath, GeneratorScript);
+			if (File.Exists (binPath))
+				return runtimePath;
 			return null;
 		}
 
